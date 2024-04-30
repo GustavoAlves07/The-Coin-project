@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navegation_graphic"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.thecoin.view.SplashFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_homeFragment_to_loginPageFragment"
+            app:destination="@id/loginPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginPageFragment"
+        android:name="com.example.thecoin.view.LoginPageFragment"
+        android:label="fragment_login_page"
+        tools:layout="@layout/fragment_login_page" >
+        <action
+            android:id="@+id/action_loginPageFragment_to_viewPagerHomeFragment"
+            app:destination="@id/viewPagerHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewPagerHomeFragment"
+        android:name="com.example.thecoin.view.ViewPagerHomeFragment"
+        android:label="fragment_view_pager_home"
+        tools:layout="@layout/fragment_view_pager_home" />
+</navigation>
