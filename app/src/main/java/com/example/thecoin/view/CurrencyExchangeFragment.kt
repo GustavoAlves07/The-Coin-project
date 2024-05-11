@@ -24,12 +24,17 @@ class CurrencyExchangeFragment : Fragment() {
     var result: Double? = null
     var firstCoinSelected: String? = null
     var secondCoinSelected: String? = null
+    var itemCopyOne: String? = null
+    var itemCopyTwo: String? = null
+    var adapterFirstCoin : ArrayAdapter<String>? = null
+    var adapterSecondCoin: ArrayAdapter<String>? = null
 
     val text: String = ""
 
     val call = Api().apiService
     private var _binding: FragmentCurrencyExchangeBinding? = null
     private val binding get() = _binding!!
+
 
 
     override fun onCreateView(
@@ -48,6 +53,9 @@ class CurrencyExchangeFragment : Fragment() {
 
         convert()
 
+
+        val invertCoins = binding.invertArrow
+
         val spinnerFirstCoin = binding.coinOne
         val spinnerSecondCoin = binding.coinTwo
 
@@ -59,6 +67,7 @@ class CurrencyExchangeFragment : Fragment() {
                 id: Long
             ) {
                 val item: String = parent?.getItemAtPosition(position).toString()
+                itemCopyOne = item
                 firstCoinSelected = spinnerFirstCoin.selectedItem.toString()
                 Log.e("testeMoeda", firstCoinSelected!!)
 
@@ -88,6 +97,7 @@ class CurrencyExchangeFragment : Fragment() {
                 id: Long
             ) {
                 val item: String = parent?.getItemAtPosition(position).toString()
+                itemCopyTwo = item
                 secondCoinSelected = spinnerSecondCoin.selectedItem.toString()
                 Log.e("moedaDois", secondCoinSelected!!)
                 Toast.makeText(requireContext(), "selected item : " + item, Toast.LENGTH_SHORT)
@@ -114,25 +124,30 @@ class CurrencyExchangeFragment : Fragment() {
 
         val orderedArray = moedas.sorted()
 
-        val adapterFirstCoin =
+         adapterFirstCoin =
             ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 orderedArray
             )
-        adapterFirstCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterFirstCoin!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFirstCoin.adapter = adapterFirstCoin
 
-        val adapterSecondCoin =
+         adapterSecondCoin =
             ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 orderedArray
             )
-        adapterSecondCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterSecondCoin!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSecondCoin.adapter = adapterSecondCoin
 
+        inverterCoins(itemCopyOne!!,itemCopyTwo!!)
+
         return binding.root
+
+
+
 
 
     }
@@ -196,7 +211,7 @@ class CurrencyExchangeFragment : Fragment() {
 
     private fun convert() {
 
-     val cambioMaker =   binding.button.setOnClickListener() {
+        val cambioMaker = binding.button.setOnClickListener() {
             val inputUser = binding.inputUser.text.toString().toDoubleOrNull()
             cambioQuery()
 
@@ -205,7 +220,7 @@ class CurrencyExchangeFragment : Fragment() {
 
                 val formatedCalc = String.format("%.2f", calc)
 
-                
+
 
                 binding.numberTest.text = formatedCalc
 
@@ -222,6 +237,30 @@ class CurrencyExchangeFragment : Fragment() {
         }
 
         return cambioMaker
+
+    }
+
+    private fun inverterCoins(copyOne: String, copyTwo: String) {
+
+        binding.invertArrow.setOnClickListener(){
+
+            adapterFirstCoin!!.add(copyTwo)
+            adapterSecondCoin!!.add(copyOne)
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
 
     }
 
