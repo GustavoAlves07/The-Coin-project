@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.example.thecoin.adapter.SpinnerAdapter
 import com.example.thecoin.databinding.FragmentCurrencyExchangeBinding
 import com.example.thecoin.model.Coin
 import com.example.thecoin.repository.Api
@@ -24,17 +26,18 @@ class CurrencyExchangeFragment : Fragment() {
     var result: Double? = null
     var firstCoinSelected: String? = null
     var secondCoinSelected: String? = null
+    lateinit var spinnerFirstCoin:Spinner
+    lateinit var spinnerSecondCoin:Spinner
     var itemCopyOne: String? = null
     var itemCopyTwo: String? = null
-    var adapterFirstCoin : ArrayAdapter<String>? = null
-    var adapterSecondCoin: ArrayAdapter<String>? = null
+    lateinit var adapterFirstCoin: SpinnerAdapter
+    lateinit var adapterSecondCoin: SpinnerAdapter
 
     val text: String = ""
 
     val call = Api().apiService
     private var _binding: FragmentCurrencyExchangeBinding? = null
     private val binding get() = _binding!!
-
 
 
     override fun onCreateView(
@@ -52,12 +55,14 @@ class CurrencyExchangeFragment : Fragment() {
 
 
         convert()
+        inverterCoins(SpinnerAdapter.listCoin[0], SpinnerAdapter.listCoin[1])
 
 
-        val invertCoins = binding.invertArrow
 
-        val spinnerFirstCoin = binding.coinOne
-        val spinnerSecondCoin = binding.coinTwo
+
+
+        spinnerFirstCoin = binding.coinOne
+        spinnerSecondCoin = binding.coinTwo
 
         spinnerFirstCoin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -113,41 +118,24 @@ class CurrencyExchangeFragment : Fragment() {
 
         }
 
-        val moedas: ArrayList<String> = arrayListOf()
 
 
-        moedas.add("USD")
-        moedas.add("EUR")
-        moedas.add("BRL")
-        moedas.add("caguei")
 
 
-        val orderedArray = moedas.sorted()
 
-         adapterFirstCoin =
-            ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                orderedArray
-            )
-        adapterFirstCoin!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterFirstCoin =
+            SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        adapterFirstCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         spinnerFirstCoin.adapter = adapterFirstCoin
+        spinnerFirstCoin.setSelection(1)
 
-         adapterSecondCoin =
-            ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                orderedArray
-            )
-        adapterSecondCoin!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterSecondCoin =
+            SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        adapterSecondCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSecondCoin.adapter = adapterSecondCoin
 
-        inverterCoins(itemCopyOne!!,itemCopyTwo!!)
-
         return binding.root
-
-
-
 
 
     }
@@ -242,24 +230,14 @@ class CurrencyExchangeFragment : Fragment() {
 
     private fun inverterCoins(copyOne: String, copyTwo: String) {
 
-        binding.invertArrow.setOnClickListener(){
-
-            adapterFirstCoin!!.add(copyTwo)
-            adapterSecondCoin!!.add(copyOne)
-
-
-
+        binding.invertArrow.setOnClickListener() {
+            spinnerFirstCoin.setSelection(SpinnerAdapter.listCoin.indexOf(secondCoinSelected))
+            spinnerSecondCoin.setSelection(SpinnerAdapter.listCoin.indexOf(firstCoinSelected))
 
 
 
 
         }
-
-
-
-
-
-
 
 
     }
