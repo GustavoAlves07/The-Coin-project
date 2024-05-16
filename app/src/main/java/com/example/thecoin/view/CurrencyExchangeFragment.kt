@@ -1,6 +1,8 @@
 package com.example.thecoin.view
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import com.example.thecoin.adapter.SpinnerAdapter
 import com.example.thecoin.databinding.FragmentCurrencyExchangeBinding
 import com.example.thecoin.model.Coin
@@ -26,18 +30,21 @@ class CurrencyExchangeFragment : Fragment() {
     var result: Double? = null
     var firstCoinSelected: String? = null
     var secondCoinSelected: String? = null
-    lateinit var spinnerFirstCoin:Spinner
-    lateinit var spinnerSecondCoin:Spinner
-    var itemCopyOne: String? = null
-    var itemCopyTwo: String? = null
-    lateinit var adapterFirstCoin: SpinnerAdapter
-    lateinit var adapterSecondCoin: SpinnerAdapter
+
+    var itemCopyOne: String = ""
+    var itemCopyTwo: String = ""
+    var adapterFirstCoin: SpinnerAdapter? = null
+    var adapterSecondCoin: SpinnerAdapter? = null
 
     val text: String = ""
 
     val call = Api().apiService
     private var _binding: FragmentCurrencyExchangeBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var spinnerFirstCoin: Spinner
+    lateinit var spinnerSecondCoin: Spinner
+    lateinit var inputUser: EditText
 
 
     override fun onCreateView(
@@ -52,88 +59,52 @@ class CurrencyExchangeFragment : Fragment() {
                 false
             )
 
-
-
-        convert()
-        inverterCoins(SpinnerAdapter.listCoin[0], SpinnerAdapter.listCoin[1])
-
-
-
-
+        inputUser = binding.inputUser
 
         spinnerFirstCoin = binding.coinOne
         spinnerSecondCoin = binding.coinTwo
-
-        spinnerFirstCoin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val item: String = parent?.getItemAtPosition(position).toString()
-                itemCopyOne = item
-                firstCoinSelected = spinnerFirstCoin.selectedItem.toString()
-                Log.e("testeMoeda", firstCoinSelected!!)
-
-                Toast.makeText(requireContext(), "selected item : " + item, Toast.LENGTH_SHORT)
-                    .show()
-
-
-            }
-
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-
-        }
-
-
-
-
-
-        spinnerSecondCoin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val item: String = parent?.getItemAtPosition(position).toString()
-                itemCopyTwo = item
-                secondCoinSelected = spinnerSecondCoin.selectedItem.toString()
-                Log.e("moedaDois", secondCoinSelected!!)
-                Toast.makeText(requireContext(), "selected item : " + item, Toast.LENGTH_SHORT)
-                    .show()
-
-
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
-
-        }
-
-
-
-
-
-
-        adapterFirstCoin =
+        val adapterFirstCoin: SpinnerAdapter =
             SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
-        adapterFirstCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinnerFirstCoin.adapter = adapterFirstCoin
-        spinnerFirstCoin.setSelection(1)
-
-        adapterSecondCoin =
+        val adapterSecondCoin: SpinnerAdapter =
             SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
-        adapterSecondCoin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerSecondCoin.adapter = adapterSecondCoin
+
+
+        spinnerInit(
+            spinnerFirstCoin,
+            adapterFirstCoin,
+            1,
+            { firstCoinSelected = it },
+            { itemCopyOne = it })
+        spinnerInit(
+            spinnerSecondCoin,
+            adapterSecondCoin,
+            0,
+            { secondCoinSelected = it },
+            { itemCopyTwo = it })
+
+
+        inputUser.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                cambioQuery()
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                convert()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+               convert()
+            }
+
+
+        })
+
+
+
+
+
+
 
         return binding.root
 
@@ -199,12 +170,12 @@ class CurrencyExchangeFragment : Fragment() {
 
     private fun convert() {
 
-        val cambioMaker = binding.button.setOnClickListener() {
-            val inputUser = binding.inputUser.text.toString().toDoubleOrNull()
-            cambioQuery()
+        if (inputUser.text.isNotEmpty()) {
 
-            if (result != null && inputUser != null) {
-                val calc = inputUser * result!!
+
+            if (result != null) {
+                cambioQuery()
+                val calc = inputUser.text.toString().toDouble() * result!!
 
                 val formatedCalc = String.format("%.2f", calc)
 
@@ -222,22 +193,66 @@ class CurrencyExchangeFragment : Fragment() {
                 ).show()
             }
 
-        }
 
-        return cambioMaker
+        }
 
     }
 
-    private fun inverterCoins(copyOne: String, copyTwo: String) {
+    private fun inverterCoins(
+        firstSpinner: Spinner,
+        secondSpinner: Spinner
+    ) {
 
         binding.invertArrow.setOnClickListener() {
-            spinnerFirstCoin.setSelection(SpinnerAdapter.listCoin.indexOf(secondCoinSelected))
-            spinnerSecondCoin.setSelection(SpinnerAdapter.listCoin.indexOf(firstCoinSelected))
-
-
+            firstSpinner.setSelection(SpinnerAdapter.listCoin.indexOf(itemCopyTwo))
+            secondSpinner.setSelection(SpinnerAdapter.listCoin.indexOf(itemCopyOne))
 
 
         }
+
+
+    }
+
+    private fun spinnerInit(
+        spinner: Spinner,
+        spinnerAdapter: SpinnerAdapter,
+        positionCoin: Int,
+        coinSelectedCallback: (String) -> Unit,
+        coinInversorCallback: (String) -> Unit,
+    ) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val item: String = parent?.getItemAtPosition(position).toString()
+                coinSelectedCallback(item)
+                coinInversorCallback(item)
+                Log.e("moedaDois", item)
+                Toast.makeText(requireContext(), "selected item : $item", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Implementação necessária, mas pode ficar vazia se não for necessário fazer nada.
+            }
+        }
+
+
+        spinner.adapter = spinnerAdapter
+
+        spinner.setSelection(positionCoin)
+
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        inverterCoins(spinnerFirstCoin, spinnerSecondCoin)
 
 
     }

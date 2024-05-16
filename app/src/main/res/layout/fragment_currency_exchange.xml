@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:inputType="numberDecimal"
         android:id="@+id/input_user"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
