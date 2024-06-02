@@ -1,14 +1,11 @@
 package com.example.thecoin.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.thecoin.adapter.SpinnerAdapter
 import com.example.thecoin.databinding.FragmentCurrencyExchangeBinding
 import com.example.thecoin.repository.Repository
@@ -20,7 +17,6 @@ class CurrencyExchangeFragment : Fragment() {
     private val binding get() = _binding!!
     val coinViewModel: CoinViewModel by viewModels()
     var spinnerAdapter: SpinnerAdapter? = null
-    var repository = Repository()
 
 
     override fun onCreateView(
@@ -30,25 +26,22 @@ class CurrencyExchangeFragment : Fragment() {
 
         _binding =
             FragmentCurrencyExchangeBinding.inflate(
-                LayoutInflater.from(requireContext()),
+                inflater,
                 container,
                 false
             )
 
-
-        spinnerAdapter =
-            SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
-
-
-        test()
+        coinViewModel.firstCoinSelected.observe(viewLifecycleOwner) { firstCoinSelection ->
+            coinViewModel.queryCoin()
+            coinViewModel.convertCoin(binding.inputUser,viewLifecycleOwner)
 
 
-        binding.button.setOnClickListener(){
-            repository.cambioQuery(
-                coinViewModel.firstCoinSelected,
-                coinViewModel.secondCoinSelected,
-                coinViewModel._queryResult)
 
+        }
+
+        coinViewModel.secondCoinSelected.observe(viewLifecycleOwner) { secondCoinSelection ->
+            coinViewModel.queryCoin()
+            coinViewModel.convertCoin(binding.inputUser,viewLifecycleOwner)
 
 
 
@@ -56,29 +49,27 @@ class CurrencyExchangeFragment : Fragment() {
         }
 
 
-
-        binding.numberTest.text = coinViewModel.queryResult.toString()
-        Log.e("cambio", coinViewModel.queryResult.toString())
-
-
-
-        coinViewModel.queryResult.observe(viewLifecycleOwner, Observer { bidValue ->
-            Log.e("bidValue","${coinViewModel.queryResult}")
+        coinViewModel.queryResult.observe(viewLifecycleOwner) {
+            binding.numberTest.text = it.toString()
+        }
 
 
 
+
+        spinnerAdapter =
+            SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
 
 
 
 
 
-            binding.numberTest.text = bidValue.toString()
+        initSelector()
 
 
-            Toast.makeText(requireContext(), "$bidValue", Toast.LENGTH_SHORT).show()
 
 
-        })
+
+
 
 
 
@@ -114,22 +105,20 @@ class CurrencyExchangeFragment : Fragment() {
     }
 
 
-    fun test() {
+    fun initSelector() {
 
-        coinViewModel.spinnerInit(
+        coinViewModel.initSpinner(
             binding.coinOne,
             spinnerAdapter!!,
             1,
             coinViewModel._firstCoinSelected
         )
-        coinViewModel.spinnerInit(
+        coinViewModel.initSpinner(
             binding.coinTwo,
             spinnerAdapter!!,
             0,
             coinViewModel._secondCoinSelected
         )
-
-
 
 
     }
@@ -139,11 +128,21 @@ class CurrencyExchangeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+
+
+
+        coinViewModel.coinConverted.observe(viewLifecycleOwner) { convertedCoin ->
+            binding.numberTest.text = convertedCoin.toString()
+        }
+
+
+
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
