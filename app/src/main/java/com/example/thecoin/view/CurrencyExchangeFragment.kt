@@ -56,13 +56,13 @@ class CurrencyExchangeFragment : Fragment() {
     fun initSelector() {
 
         initSpinner(
-            spinnerOne!!,
+            spinnerOne,
             spinnerAdapter!!,
             1, coinViewModel._positionCoinOne,
             coinViewModel._firstCoinSelected
         )
         initSpinner(
-            spinnerTwo!!,
+            spinnerTwo,
             spinnerAdapter!!,
             0, coinViewModel._positionCoinTwo,
             coinViewModel._secondCoinSelected
