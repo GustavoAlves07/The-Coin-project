@@ -42,14 +42,15 @@ class CurrencyExchangeFragment : Fragment() {
         spinnerAdapter =
             SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
 
-        initSelector()
-        initViewModel()
+
 
 
 
 
 
         return binding.root
+
+
     }
 
 
@@ -112,6 +113,9 @@ class CurrencyExchangeFragment : Fragment() {
         binding.invertArrow.setOnClickListener(){
             coinViewModel.invertCoin(spinnerOne,spinnerTwo)
         }
+        binding.saveButton.setOnClickListener(){
+            coinViewModel.transferCoinsFragments(parentFragmentManager)
+        }
 
 
     }
@@ -119,6 +123,9 @@ class CurrencyExchangeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initSelector()
+        initViewModel()
 
         coinViewModel.coinConverted.observe(viewLifecycleOwner) { convertedCoin ->
             binding.numberTest.text = convertedCoin.toString()

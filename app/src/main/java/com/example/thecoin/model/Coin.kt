@@ -1,6 +1,7 @@
 package com.example.thecoin.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Coin(
     @SerializedName("ask") val ask: String,
@@ -17,5 +18,5 @@ data class Coin(
 
 
 
-)
+):Serializable
 

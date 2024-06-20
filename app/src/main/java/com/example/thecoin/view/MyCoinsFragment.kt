@@ -13,91 +13,18 @@ import com.example.thecoin.model.Coin
 
 class MyCoinsFragment : Fragment() {
     private var _binding: FragmentMyCoinsBinding? = null
-
     private val binding get() = _binding!!
 
-    override fun onCreateView(
+    private lateinit var rvAdapter: RecyclerViewAdapter
+    private val dataSet = mutableListOf<Coin>()
+        override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMyCoinsBinding.inflate(inflater, container, false)
 
-        val dataSet = mutableListOf(
-            Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            ),Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            ),Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            ),Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            ),Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            ),Coin(
-                "50000",
-                "49500",
-                "BTC",
-                "BRL",
-                "2024-06-18T14:00:00",
-                "50500",
-                "49000",
-                "Bitcoin",
-                "1.0",
-                "1624024800",
-                "500"
-            )
-        )
-            val rvAdapter = RecyclerViewAdapter (dataSet)
+
+         rvAdapter = RecyclerViewAdapter(dataSet)
 
         val recyclerView = binding.rvMyCoins
 
@@ -110,12 +37,27 @@ class MyCoinsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        receivingCoins()
+
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
         _binding = null
+    }
+
+    private fun receivingCoins() {
+        val coinReceived = arguments?.getSerializable("coinTransfered") as? Coin
+        if (coinReceived != null) {
+            val newCoin = coinReceived
+            rvAdapter.addCoinToList(newCoin)
+        } else {
+            // Trate o caso em que coinReceived é nulo
+            // Por exemplo, você pode mostrar uma mensagem de erro ou logar um aviso
+        }
     }
 
 

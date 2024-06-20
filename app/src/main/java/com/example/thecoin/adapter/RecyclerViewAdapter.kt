@@ -1,5 +1,6 @@
 package com.example.thecoin.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,71 +10,41 @@ import com.example.thecoin.model.Coin
 
 class RecyclerViewAdapter(private val myCoinsList: MutableList<Coin>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
-    var _binding: MycoinAdapterRvBinding? = null
 
-    val binding get() = _binding
+    // ViewHolder class
+    class ViewHolder(private val bindingView: MycoinAdapterRvBinding) :
+        RecyclerView.ViewHolder(bindingView.root) {
 
+        fun bind(coin: Coin) {
+            bindingView.value.text = coin.bid
+            bindingView.coinsNames.text = coin.name
+
+            bindingView.buttonGroup.setOnCheckedChangeListener { _, checkid ->
+                when (checkid) {
+                    R.id.btnActualValue -> bindingView.value.text = coin.bid
+                    R.id.btnMaximumValue -> bindingView.value.text = coin.high
+                    R.id.btnMinimumValue -> bindingView.value.text = coin.low
+                    R.id.btnVariation -> bindingView.value.text = coin.varBid
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        _binding =
-            MycoinAdapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-
-
-        return ViewHolder(binding!!)
+        val binding = MycoinAdapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val coin = myCoinsList[position]
         holder.bind(coin)
-
-        holder.radioGroup.setOnCheckedChangeListener { group, checkid ->
-            when (checkid) {
-
-                R.id.btnActualValue -> {
-                    coin
-
-
-                }
-
-                R.id.btnMaximumValue -> {
-
-
-                }
-
-                R.id.btnMinimumValue -> {
-
-
-                }
-
-                R.id.btnVariation -> {
-
-
-                }
-
-
-            }
-        }
-
     }
 
-    override fun getItemCount(): Int {
-        return myCoinsList.size
-    }
+    override fun getItemCount(): Int = myCoinsList.size
 
-    class ViewHolder(private val bindingView: MycoinAdapterRvBinding) :
-        RecyclerView.ViewHolder(bindingView.root) {
-        fun bind(coin: Coin) {
-            bindingView.value.text = coin.bid
-            bindingView.coinsNames.text = coin.name
-        }
-
-        val radioGroup = bindingView.buttonGroup
-        val actualValue = bindingView.btnActualValue
-        val maximumValue = bindingView.btnMaximumValue
-        val minimumValue = bindingView.btnMinimumValue
-        val variationValue = bindingView.btnVariation
-
-
+    fun addCoinToList(coin: Coin) {
+        myCoinsList.add(coin)
+        notifyItemInserted(myCoinsList.size - 1)
+        Log.i("listSize", myCoinsList.size.toString())
     }
 }

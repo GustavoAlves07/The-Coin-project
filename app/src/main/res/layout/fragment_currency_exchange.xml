@@ -59,4 +59,16 @@
         app:layout_constraintStart_toEndOf="@id/spinner_first_coin"
         app:layout_constraintTop_toBottomOf="@id/input_user" />
 
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/black"
+        android:text="salvar moeda atual"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_second_coin"
+        app:layout_constraintStart_toStartOf="@+id/spinner_first_coin"
+        app:layout_constraintTop_toBottomOf="@id/invert_arrow"
+        tools:layout_editor_absoluteY="454dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

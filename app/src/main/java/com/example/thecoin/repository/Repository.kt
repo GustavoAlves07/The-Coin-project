@@ -13,64 +13,48 @@ import java.util.Locale
 
 class Repository {
 
+    private val call = Api().apiService
 
-    val call = Api().apiService
 
     fun cambioQuery(
-        firstCoinSelected: LiveData<String>, secondCoinSelected: LiveData<String>,
+        firstCoinSelected: String, secondCoinSelected: String, coinResult: MutableLiveData<Coin>,
         result: MutableLiveData<Double>
     ) {
-        if (firstCoinSelected.value == secondCoinSelected.value) {
+        if (firstCoinSelected == secondCoinSelected) {
             result.value = 1.0
-
         } else {
             call.coinConverter(
-                firstCoinSelected.value.toString(),
-                secondCoinSelected.value.toString()
-            )
-                .enqueue(object : Callback<Map<String, Coin>> {
-                    override fun onResponse(
-                        call: Call<Map<String, Coin>>,
-                        response: Response<Map<String, Coin>>
-                    ) {
-                        if (response.isSuccessful) {
+                firstCoinSelected,
+                secondCoinSelected
+            ).enqueue(object : Callback<Map<String, Coin>> {
+                override fun onResponse(
+                    call: Call<Map<String, Coin>>,
+                    response: Response<Map<String, Coin>>
+                ) {
+                    if (response.isSuccessful) {
+                        val currencyMap = response.body()
 
-                            val currencyMap = response.body()
+                        if (currencyMap != null && currencyMap.containsKey(firstCoinSelected + secondCoinSelected)) {
+                            val currency = currencyMap[firstCoinSelected + secondCoinSelected]
+                            currency?.let {
+                                coinResult.value = it
 
-                            if (currencyMap != null && currencyMap.containsKey(firstCoinSelected.value + secondCoinSelected.value)) {
-                                val currency =
-                                    currencyMap[firstCoinSelected.value + secondCoinSelected.value]
-
-
-                                val bidValue = currency!!.bid.toDoubleOrNull()
-
-                                val formatedNumber = String.format(Locale.US,"%.2f",bidValue)
-
-
+                                val bidValue = it.bid.toDoubleOrNull()
+                                val formatedNumber = String.format(Locale.US, "%.2f", bidValue)
                                 result.value = formatedNumber.toDoubleOrNull()
 
-
-
                                 Log.i("objetocoin", "esse é o valor recebido = $bidValue")
-
                             }
                         }
                     }
+                }
 
-
-                    override fun onFailure(call: Call<Map<String, Coin>>, t: Throwable) {
-
-
-                    }
-                })
-
-            return
-
+                override fun onFailure(call: Call<Map<String, Coin>>, t: Throwable) {
+                    // Tratar a falha da requisição
+                }
+            })
         }
     }
-
 }
-
-
 
 

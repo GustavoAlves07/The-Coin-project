@@ -1,16 +1,22 @@
 package com.example.thecoin.viewmodel
 
 import android.icu.text.Transliterator.Position
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.replace
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.thecoin.R
+import com.example.thecoin.model.Coin
 import com.example.thecoin.repository.Repository
+import com.example.thecoin.view.MyCoinsFragment
 import java.util.Locale
 
 class CoinViewModel : ViewModel() {
@@ -23,17 +29,18 @@ class CoinViewModel : ViewModel() {
 
     val secondCoinSelected: LiveData<String> get() = _secondCoinSelected
 
+    private val _coinResult = MutableLiveData<Coin>()
+    val coinResult: LiveData<Coin> get() = _coinResult
+
     val _queryResult = MutableLiveData<Double>()
 
     val repository = Repository()
 
     val queryResult: LiveData<Double> get() = _queryResult
 
-
     val _coinConverted = MutableLiveData<Double>()
 
     val coinConverted: LiveData<Double> get() = _coinConverted
-
 
     val _positionCoinOne = MutableLiveData<Int>()
 
@@ -46,9 +53,9 @@ class CoinViewModel : ViewModel() {
     fun queryCoin() {
 
         repository.cambioQuery(
-            firstCoinSelected,
-            secondCoinSelected,
-            _queryResult
+            firstCoinSelected.value.toString(),
+            secondCoinSelected.value.toString(), _coinResult,
+            _queryResult,
         )
 
 
@@ -102,6 +109,21 @@ class CoinViewModel : ViewModel() {
 
 
     }
+
+    fun transferCoinsFragments(fragmentManager: FragmentManager) {
+        val myCoinsFragment = MyCoinsFragment()
+        val coinTransferBundle = Bundle()
+        coinResult.value?.let { coin ->
+            coinTransferBundle.putSerializable("coinTransfered", coin)
+        }
+        myCoinsFragment.arguments = coinTransferBundle
+
+        fragmentManager.beginTransaction()
+            .replace(R.id.my_coin_fragment, myCoinsFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
 
 }
