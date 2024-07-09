@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Coin(
-    @SerializedName("ask") val ask: String,
-    @SerializedName("bid") val bid: String,
-    @SerializedName("code") val code: String,
-    @SerializedName("codein") val codein: String,
-    @SerializedName("create_date") val createDate: String,
-    @SerializedName("high") val high: String,
-    @SerializedName("low") val low: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("pctChange") val pctChange: String,
-    @SerializedName("timestamp") val timestamp: String,
-    @SerializedName("varBid") val varBid: String,
+    @SerializedName("ask") var ask: String = "",
+    @SerializedName("bid") var bid: String = "",
+    @SerializedName("code") var code: String = "",
+    @SerializedName("codein") var codein: String = "",
+    @SerializedName("create_date") var createDate: String = "",
+    @SerializedName("high") var high: String = "",
+    @SerializedName("low") var low: String = "",
+    @SerializedName("name") var name: String = "",
+    @SerializedName("pctChange") var pctChange: String = "",
+    @SerializedName("timestamp") var timestamp: String = "",
+    @SerializedName("varBid") var varBid: String = "",
 
 
 
-):Serializable
+    ):Serializable
 

@@ -11,7 +11,6 @@ import com.example.thecoin.model.Coin
 class RecyclerViewAdapter(private val myCoinsList: MutableList<Coin>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-    // ViewHolder class
     class ViewHolder(private val bindingView: MycoinAdapterRvBinding) :
         RecyclerView.ViewHolder(bindingView.root) {
 
@@ -24,7 +23,7 @@ class RecyclerViewAdapter(private val myCoinsList: MutableList<Coin>) :
                     R.id.btnActualValue -> bindingView.value.text = coin.bid
                     R.id.btnMaximumValue -> bindingView.value.text = coin.high
                     R.id.btnMinimumValue -> bindingView.value.text = coin.low
-                    R.id.btnVariation -> bindingView.value.text = coin.varBid
+                    R.id.btnVariation -> bindingView.value.text = coin.pctChange
                 }
             }
         }
