@@ -19,22 +19,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:inputType="numberDecimal"
         android:id="@+id/input_user"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:hint="Digite o valor a ser convertido"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:inputType="numberDecimal"
+        android:text="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/number_test" />
 
     <Spinner
-        android:id="@+id/coin_one"
+        android:id="@+id/spinner_first_coin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -42,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/input_user" />
 
     <Spinner
-        android:id="@+id/coin_two"
+        android:id="@+id/spinner_second_coin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -56,20 +55,20 @@
         android:layout_marginTop="40dp"
         android:background="@android:color/transparent"
         android:src="@drawable/invert_arrow"
-        app:layout_constraintEnd_toStartOf="@id/coin_two"
-        app:layout_constraintStart_toEndOf="@id/coin_one"
+        app:layout_constraintEnd_toStartOf="@id/spinner_second_coin"
+        app:layout_constraintStart_toEndOf="@id/spinner_first_coin"
         app:layout_constraintTop_toBottomOf="@id/input_user" />
 
     <Button
-
-        android:id="@+id/button"
+        android:id="@+id/save_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="50dp"
         android:backgroundTint="@color/black"
-        android:text="Cambio"
-        app:layout_constraintEnd_toEndOf="@id/input_user"
-        app:layout_constraintStart_toStartOf="@id/input_user"
-        app:layout_constraintTop_toBottomOf="@id/input_user" />
+        android:text="salvar moeda atual"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_second_coin"
+        app:layout_constraintStart_toStartOf="@+id/spinner_first_coin"
+        app:layout_constraintTop_toBottomOf="@id/invert_arrow"
+        tools:layout_editor_absoluteY="454dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.thecoin.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,23 +27,14 @@ class ViewPagerHomeFragment : Fragment() {
 
         clickListener()
 
-
-
         return binding.root
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViewPager()
-
-
-
-
-
-    }
+}
 
 
 
@@ -54,6 +44,7 @@ class ViewPagerHomeFragment : Fragment() {
         binding.viewPager.adapter = pageAdapter
 
         pageAdapter.addFragment(CurrencyExchangeFragment(),R.string.fragment_exchange)
+        pageAdapter.addFragment(MyCoinsFragment(),R.string.fragment_my_coin)
 
         binding.viewPager.offscreenPageLimit = pageAdapter.itemCount
 
@@ -62,27 +53,13 @@ class ViewPagerHomeFragment : Fragment() {
 
             tab.text = getString(pageAdapter.getTitle(position))
         }.attach()
-
-
-
-
-
-
-
-
-
     }
 
     private fun clickListener(){
-
         binding.btnExit.setOnClickListener{
             Toast.makeText(requireActivity(),"Teste",Toast.LENGTH_SHORT)
                 .show()
         }
-
-
-
-
     }
 
 
