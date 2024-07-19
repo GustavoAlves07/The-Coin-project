@@ -14,6 +14,7 @@
             android:id="@+id/action_homeFragment_to_loginPageFragment"
             app:destination="@id/loginPageFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/loginPageFragment"
         android:name="com.example.thecoin.view.LoginPageFragment"
@@ -23,9 +24,39 @@
             android:id="@+id/action_loginPageFragment_to_viewPagerHomeFragment"
             app:destination="@id/viewPagerHomeFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/viewPagerHomeFragment"
         android:name="com.example.thecoin.view.ViewPagerHomeFragment"
         android:label="fragment_view_pager_home"
-        tools:layout="@layout/fragment_view_pager_home" />
+        tools:layout="@layout/fragment_view_pager_home">
+        <action
+            android:id="@+id/action_viewPagerHomeFragment_to_currencyExchangeFragment"
+            app:destination="@id/currencyExchangeFragment" />
+        <action
+            android:id="@+id/action_viewPagerHomeFragment_to_myCoinsFragment"
+            app:destination="@id/myCoinsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/currencyExchangeFragment"
+        android:name="com.example.thecoin.view.CurrencyExchangeFragment"
+        android:label="fragment_currency_exchange"
+        tools:layout="@layout/fragment_currency_exchange" >
+        <action
+            android:id="@+id/action_currencyExchangeFragment_to_myCoinsFragment"
+            app:destination="@id/myCoinsFragment"
+            app:launchSingleTop="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/myCoinsFragment"
+        android:name="com.example.thecoin.view.MyCoinsFragment"
+        android:label="fragment_my_coins"
+        tools:layout="@layout/fragment_my_coins" >
+        <argument
+            android:name="coinReceived"
+            app:argType="com.example.thecoin.model.Coin[]"
+            app:nullable="true" />
+    </fragment>
 </navigation>

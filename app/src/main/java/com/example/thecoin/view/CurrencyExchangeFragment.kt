@@ -11,11 +11,12 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.thecoin.adapter.SpinnerAdapter
 import com.example.thecoin.databinding.FragmentCurrencyExchangeBinding
+import com.example.thecoin.model.Coin
 import com.example.thecoin.viewmodel.CoinViewModel
 import java.util.Locale
 
@@ -26,8 +27,6 @@ class CurrencyExchangeFragment : Fragment() {
     var spinnerAdapter: SpinnerAdapter? = null
     lateinit var spinnerOne: Spinner
     lateinit var spinnerTwo: Spinner
-    private val initialValue = 1.0
-    private val myCoinsFragment = MyCoinsFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +38,8 @@ class CurrencyExchangeFragment : Fragment() {
         spinnerAdapter =
             SpinnerAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item)
 
-
         initSelector()
         initViewModel()
-
-
 
         return binding.root
     }
@@ -56,6 +52,11 @@ class CurrencyExchangeFragment : Fragment() {
         }
 
         convertCoin(binding.inputUser)
+
+        binding.saveButton.setOnClickListener {
+            transferCoin(coinViewModel.actualCoin)
+        }
+
     }
 
     override fun onDestroyView() {
@@ -76,12 +77,9 @@ class CurrencyExchangeFragment : Fragment() {
         binding.invertArrow.setOnClickListener {
             invertCoin(spinnerOne, spinnerTwo)
         }
-        binding.saveButton.setOnClickListener {
-        }
     }
 
     fun convertCoin(editText: EditText) {
-
         editText.addTextChangedListener(
             object : TextWatcher {
                 override fun beforeTextChanged(
@@ -91,40 +89,22 @@ class CurrencyExchangeFragment : Fragment() {
                     after: Int
                 ) {
 
-                    val initialInputUser = editText.text.toString().toDoubleOrNull()
-
-                    val initialConversionRate =
-                        coinViewModel.coinResult.value!!.bid.toDoubleOrNull()
-
-                    val initialFormatation = initialInputUser?.times(initialConversionRate!!)
-
-                    coinViewModel._coinConverted.value = initialFormatation
-
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    coinViewModel.coinResult.observe(viewLifecycleOwner) {
-                        val inputValue = editText.text.toString().toDoubleOrNull() ?: 0.0
-                        val conversionRate =
-                            coinViewModel.coinResult.value!!.bid.toDoubleOrNull() ?: 1.0
-                        val formatedNumber =
-                            String.format(Locale.US, "%.2f", inputValue * conversionRate)
-                        coinViewModel._coinConverted.value = formatedNumber.toDoubleOrNull()
-
-                    }
-
-
+                    val inputValue = s.toString().toDoubleOrNull() ?: 0.0
+                    val conversionRate =
+                        coinViewModel.coinResult.value?.bid?.toDoubleOrNull() ?: 1.0
+                    val formattedNumber =
+                        String.format(Locale.US, "%.2f", inputValue * conversionRate)
+                    coinViewModel._coinConverted.value = formattedNumber.toDoubleOrNull()
                 }
 
                 override fun afterTextChanged(s: Editable?) {
 
                 }
-
-
-            })
-
-
+            }
+        )
     }
 
     private fun initSelector() {
@@ -162,4 +142,14 @@ class CurrencyExchangeFragment : Fragment() {
         spinnerOne.setSelection(positionTwo)
         spinnerTwo.setSelection(positionOne)
     }
+
+
+    private fun transferCoin(actualCoin: Coin) {
+        val bundle = Bundle()
+        bundle.putParcelable("actualCoin", actualCoin)
+        parentFragmentManager.setFragmentResult("actualCoinAdded", bundle)
+
+    }
 }
+
+
