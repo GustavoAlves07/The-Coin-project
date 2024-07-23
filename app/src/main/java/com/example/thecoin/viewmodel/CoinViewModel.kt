@@ -28,7 +28,6 @@ class CoinViewModel : ViewModel() {
 
     val coinConverted: LiveData<Double> get() = _coinConverted
 
-    val coinList = arrayListOf<Coin>()
 
 
 
@@ -44,7 +43,6 @@ class CoinViewModel : ViewModel() {
                 if (coinReceived != null) {
                     _coinResult.value = coinReceived!!
                     actualCoin = coinReceived
-                    Log.i("fds2","total " + _coinResult.value!!.bid )
                 }
             }
         }

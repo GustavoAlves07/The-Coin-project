@@ -53,7 +53,6 @@ class Repository {
                                 val formatedNumber = String.format(Locale.US, "%.2f", bidValue)
                                 result = formatedNumber.toDoubleOrNull()!!
                                 coinResult.bid = result.toString()
-                                Log.i("fds","total " + coinResult.bid )
                                 callback(coinResult)
 
                             }
@@ -67,7 +66,6 @@ class Repository {
 
                 override fun onFailure(call: Call<Map<String, Coin>>, t: Throwable) {
                     callback(null)
-                    // Tratar a falha da requisição
                 }
             })
         }

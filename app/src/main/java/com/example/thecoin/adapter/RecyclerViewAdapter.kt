@@ -14,29 +14,36 @@ class RecyclerViewAdapter(private val myCoinsList: MutableList<Coin>) :
     class ViewHolder(private val bindingView: MycoinAdapterRvBinding) :
         RecyclerView.ViewHolder(bindingView.root) {
 
-        fun bind(coin: Coin) {
+        fun bind(coin: Coin, deleteCoin: (Int) -> Unit) {
             bindingView.value.text = coin.bid
             bindingView.coinsNames.text = coin.name
+            val buttonDelete = bindingView.deleteCoin
+            buttonDelete.setOnClickListener {
+                deleteCoin(adapterPosition)
+            }
+
+            bindingView.buttonGroup.check(R.id.btnActualValue)
 
             bindingView.buttonGroup.setOnCheckedChangeListener { _, checkid ->
                 when (checkid) {
                     R.id.btnActualValue -> bindingView.value.text = coin.bid
                     R.id.btnMaximumValue -> bindingView.value.text = coin.high
                     R.id.btnMinimumValue -> bindingView.value.text = coin.low
-                    R.id.btnVariation -> bindingView.value.text = coin.pctChange
+                    R.id.btnVariation -> bindingView.value.text = coin.pctChange + "%"
                 }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = MycoinAdapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            MycoinAdapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val coin = myCoinsList[position]
-        holder.bind(coin)
+        holder.bind(coin, this::removeCoinInList)
     }
 
     override fun getItemCount(): Int = myCoinsList.size
@@ -45,5 +52,13 @@ class RecyclerViewAdapter(private val myCoinsList: MutableList<Coin>) :
         myCoinsList.add(coin)
         notifyItemInserted(myCoinsList.size - 1)
         Log.i("listSize", myCoinsList.size.toString())
+    }
+
+    fun removeCoinInList(position: Int) {
+        if (position < myCoinsList.size) {
+            myCoinsList.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, myCoinsList.size)
+        }
     }
 }
